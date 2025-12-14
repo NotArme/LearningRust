@@ -49,3 +49,7 @@ pub fn mode(number_list: &mut Vec<i16>) -> (i16, Vec<i16>) {
 
     return (highest_repetition, value_list.remove(&highest_repetition).expect("its not production code and the input is baked in anyways so whatever"))
 }
+
+#[cfg(test)]
+#[path = "median_mode_tests.rs"]
+mod median_mode_tests;
