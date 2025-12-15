@@ -22,7 +22,7 @@ mod employee_map;
 
 
 fn main() {
-    println!("Hello, world!\n");
+    println!("\n\n--------------\nMedian and mode exercise!\n");
     
     let mut number_list: Vec<i16> = vec![4, -29, -493, 421, 9, 9, 39, -418, -32, 39, 39, 86, 422, -318, 9, -441, -441, 172, -156, -498, -120];
 
@@ -32,6 +32,14 @@ fn main() {
     println!("Median is {}\n", median);
 
     let (repetitions, mode) = median_mode::mode(&mut number_list);
-    println!("Mode is {:?}\nIt appears a total of {} times\n", mode, repetitions);
+    println!("Mode is {:?}\nIt appears a total of {} times", mode, repetitions);
 
+    // ---------------------------------------------------------- //
+
+    println!("\n\n--------------\nPig latin exercise!\n");
+    let lorem_string = String::from("Lorem ipsum dolor sit amet, consectetur adipiscing elit. ");
+    let pig_latin_lorem_ipsum = pig_latin::string_to_pig_latin(&lorem_string);
+
+    println!("Original string is: {:?}", lorem_string);
+    println!("Modified string is: {:?}", pig_latin_lorem_ipsum);
 }
