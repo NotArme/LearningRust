@@ -14,3 +14,7 @@ opt-level = 1
 # Enable a large amount of optimization in the dev profile for dependencies.
 [profile.dev.package."*"]
 opt-level = 3
+
+[lints.clippy]
+                            # im sorry i just cant stand the idiomatic return
+needless_return = "allow"   # thankfully this is a personal project so i can do whatever i want sue me

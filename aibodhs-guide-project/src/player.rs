@@ -36,7 +36,7 @@ struct  AnimationState {
 }
 
 fn atlas_index_for(facing: Facing, frame_in_row: usize) -> usize {
-    row_start_index(facing) + frame_in_row.min(WALK_FRAMES - 1)
+    return row_start_index(facing) + frame_in_row.min(WALK_FRAMES - 1)
 }
 
 fn spawn_player(mut commands: Commands, asset_server: Res<AssetServer>, mut atlas_layout: ResMut<Assets<TextureAtlasLayout>>) {
