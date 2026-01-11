@@ -2,6 +2,8 @@ use bevy::prelude::*;
 
 const TILE_SIZE: u32 = 64;
 const WALK_FRAMES: usize = 9;
+const PLAYER_Z: f32 = 20.0;
+
 const MOVE_SPEED: f32 = 140.0;
 const ANIM_DT: f32 = 0.1; //seconds per frame
 
@@ -49,7 +51,7 @@ fn spawn_player(mut commands: Commands, asset_server: Res<AssetServer>, mut atla
     commands.spawn(
         (Sprite::from_atlas_image(texture, 
             TextureAtlas { layout, index: start_index }),
-        Transform::from_translation(Vec3::ZERO),
+        Transform::from_translation(Vec3::new(0., 0., PLAYER_Z)),
         Player,
         AnimationState { facing, moving: false, was_moving: false},
         AnimationTimer(Timer::from_seconds(ANIM_DT, TimerMode::Repeating))
@@ -76,8 +78,7 @@ fn move_player(input: Res<ButtonInput<KeyCode>>, time: Res<Time>, mut player: Qu
     }
 
     if direction != Vec2::ZERO {
-        let speed = 300.0;
-        let velocity = direction.normalize() * speed * time.delta_secs();
+        let velocity = direction.normalize() * MOVE_SPEED * time.delta_secs();
         transform.translation.x += velocity.x;
         transform.translation.y += velocity.y;
         anim.moving = true;

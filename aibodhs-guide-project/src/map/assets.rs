@@ -1,5 +1,6 @@
 use bevy::{prelude::*, sprite::Anchor};
 use bevy_procedural_tilemaps::prelude::*;
+use crate::map::tilemap::TILEMAP;
 
 #[derive(Clone)]
 pub struct SpawnableAsset {
@@ -23,4 +24,61 @@ impl SpawnableAsset {
         self.grid_offset = offset;
         return self;
     }
+}
+
+#[derive(Clone)]
+pub struct TilemapHandles {
+    pub image: Handle<Image>,
+    pub layout: Handle<TextureAtlasLayout>
+}
+
+impl TilemapHandles {
+    pub fn sprite(&self, atlas_index: usize) -> Sprite {
+        Sprite::from_atlas_image(self.image.clone(), TextureAtlas::from(self.layout.clone()).with_index(atlas_index))
+    }
+}
+
+pub fn prepare_tilemap_handles(
+    asset_server: &Res<AssetServer>,
+    atlas_layouts: &mut ResMut<Assets<TextureAtlasLayout>>,
+    assets_directory: &str,
+    tilemap_file: &str
+) -> TilemapHandles {
+    let image = asset_server.load::<Image>(format!("{assets_directory}/{tilemap_file}"));
+    let mut layout = TextureAtlasLayout::new_empty(TILEMAP.atlas_size());
+    
+    for index in 0..TILEMAP.sprites.len() {
+        layout.add_texture(TILEMAP.sprite_rect(index));
+    }
+    let layout = atlas_layouts.add(layout);
+
+    TilemapHandles { image, layout }
+}
+
+pub fn load_assets(tilemap_handles: &TilemapHandles, assets_definitions: Vec<Vec<SpawnableAsset>>) -> ModelsAssets<Sprite> {
+    
+    let mut models_assets = ModelsAssets::<Sprite>::new();
+
+    for (model_index, assets) in assets_definitions.into_iter().enumerate() {
+        for asset_tile in assets {
+            let SpawnableAsset {
+                sprite_name,
+                grid_offset,
+                offset,
+                components_spawner
+            } = asset_tile;
+
+            let Some(atlas_index) = TILEMAP.sprite_index(sprite_name) else {
+                panic!("Unknown sprite: '{}'", sprite_name);
+            };
+
+            models_assets.add(model_index, ModelAsset { 
+                assets_bundle: tilemap_handles.sprite(atlas_index), 
+                spawn_commands: components_spawner, 
+                grid_offset: grid_offset, 
+                world_offset: offset });
+        }
+    }
+
+    models_assets
 }
